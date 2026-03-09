@@ -11,7 +11,13 @@ RSpec.describe MaintenanceService, type: :model do
     it { should validate_presence_of(:date) }
     it { should validate_presence_of(:cost_cents) }
     it { should validate_presence_of(:priority) }
-    
+
     it { should validate_numericality_of(:cost_cents).only_integer.is_greater_than_or_equal_to(0) }
+
+    describe '#status' do
+      it 'accepts valid statuses' do
+        should define_enum_for(:status).with_values([:pending, :in_progress, :completed])
+      end
+    end
   end
 end
