@@ -43,5 +43,20 @@ RSpec.describe MaintenanceService, type: :model do
         should define_enum_for(:priority).with_values([:low, :medium, :high])
       end
     end
+
+    describe '#date' do
+      it 'accepts valid date' do
+        should allow_value(Date.today).for(:date)
+        should allow_value(Date.yesterday).for(:date)
+        should allow_value(1.week.ago.to_date).for(:date)
+      end
+
+      it 'rejects invalid date' do
+        should_not allow_value('not a date').for(:date)
+        should_not allow_value(Date.tomorrow).for(:date)
+        should_not allow_value(Date.today+5.days).for(:date)
+        should_not allow_value(nil).for(:date)
+      end
+    end
   end
 end
