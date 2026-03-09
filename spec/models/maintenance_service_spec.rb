@@ -19,5 +19,29 @@ RSpec.describe MaintenanceService, type: :model do
         should define_enum_for(:status).with_values([:pending, :in_progress, :completed])
       end
     end
+
+    describe '#cost_cents' do
+      context 'with valid cost' do
+        it 'accepts valid cost values' do
+          should allow_value(0).for(:cost_cents)
+          should allow_value(100).for(:cost_cents)
+          should allow_value(9999).for(:cost_cents)
+        end
+      end
+
+      context 'with invalid cost' do
+        it 'rejects invalid cost values' do
+          should_not allow_value(-1).for(:cost_cents)
+          should_not allow_value(10.5).for(:cost_cents)
+          should_not allow_value('one hundred').for(:cost_cents)
+        end
+      end
+    end
+
+    describe '#priority' do
+      it 'accepts valid priority values' do
+        should define_enum_for(:priority).with_values([:low, :medium, :high])
+      end
+    end
   end
 end
