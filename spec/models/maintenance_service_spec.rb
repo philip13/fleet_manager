@@ -59,10 +59,11 @@ RSpec.describe MaintenanceService, type: :model do
       end
     end
 
-    describe '#complete_at' do
+    describe '#completed_at' do
       it 'Maintennance Service is invalid as completed without a completed_date' do
-        service = build(:maintenance_service, status: :completed, complete_at: nil)
-        expect(service).not_to be_valid
+        service = MaintenanceService.new(status: :completed, completed_at: nil)
+        service.valid?
+        expect(service.errors[:completed_at]).to include("can't be blank when service is completed")
       end
     end
   end
