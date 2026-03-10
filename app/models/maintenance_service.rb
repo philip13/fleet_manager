@@ -6,11 +6,17 @@ class MaintenanceService < ApplicationRecord
   validates :description, :status, :date, :cost_cents, :priority, presence: true
   validates :cost_cents, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :date_cannot_be_in_future
-
+  validate :complete_date_must_be_present
   private
   def date_cannot_be_in_future
     if date.present? && date > Date.today
       errors.add(:date, "can't be in the future")
+    end
+  end
+
+  def complete_date_must_be_present
+    if status == 'completed' && completed_at.nil?
+      errors.add(:completed_at, "can't be blank when service is completed")
     end
   end
 end
