@@ -58,5 +58,12 @@ RSpec.describe MaintenanceService, type: :model do
         should_not allow_value(nil).for(:date)
       end
     end
+
+    describe '#complete_at' do
+      it 'Maintennance Service is invalid as completed without a completed_date' do
+        service = build(:maintenance_service, status: :completed, complete_at: nil)
+        expect(service).not_to be_valid
+      end
+    end
   end
 end
