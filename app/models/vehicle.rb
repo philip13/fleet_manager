@@ -1,4 +1,5 @@
 class Vehicle < ApplicationRecord
+  has_many :maintenance_services 
   enum :status, { active: 0, inactive: 1, in_maintenance: 2 }
 
   validates :vin, :plate, presence: true, uniqueness: { case_sensitive: false }
