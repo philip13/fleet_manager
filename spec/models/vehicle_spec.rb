@@ -9,6 +9,9 @@ RSpec.describe Vehicle, type: :model do
     it { should validate_presence_of(:year) }
     it { should validate_numericality_of(:year).only_integer }
     it { should validate_presence_of(:status) }
+
+    # one vehicle could have one or more maintenance services
+    it { should have_many(:maintenance_services) }
     
     describe '#year' do
       context 'with valid year' do
