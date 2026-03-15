@@ -1,0 +1,21 @@
+<h1>
+  Vehicle Details
+</h1>
+<% @vehicle.inspect %>
+
+<div class="card">
+  <div class="card-body">
+    <h3 class="card-title">
+      <%= @vehicle.vin %> 
+      <br>
+      <%= @vehicle.plate %>
+    </h3>
+    <p class="card-text">
+      <strong>Brand</strong><%= @vehicle.brand %> <br>
+      <strong>Model:</strong> <%= @vehicle.model %><br>
+      <strong>Year:</strong> <%= @vehicle.year %><br>
+      <strong>Status:</strong> <%= @vehicle.status %>
+    </p>
+    <%= link_to 'Back to Vehicles', vehicles_path, class: 'btn btn-primary' %>
+  </div>
+</div>

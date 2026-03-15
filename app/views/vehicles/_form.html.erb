@@ -1,0 +1,33 @@
+<%= form_with model: [vehicle] do |form| %>
+  <div class="mb-3">
+    <%= form.label :vin, class: 'form-label' %>
+    <%= form.text_field :vin, class: 'form-control' %>
+    <%= form_field_error_class(vehicle, :vin) %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :plate, class: 'form-label' %>
+    <%= form.text_field :plate, class: 'form-control' %>
+    <%= form_field_error_class(vehicle, :plate) %>
+  </div>
+  <div class="mb-3"> 
+    <%= form.label :brand, class: 'form-label' %>
+    <%= form.text_field :brand, class: 'form-control' %>
+    <%= form_field_error_class(vehicle, :brand) %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :model, class: 'form-label' %>
+      <%= form.text_field :model, class: 'form-control' %>
+      <%= form_field_error_class(vehicle, :model) %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :year, class: 'form-label' %>
+    <%= form.select :year, options_for_select((1990..2050).to_a, selected: vehicle.year), {}, class: 'form-select' %>
+    <%= form_field_error_class(vehicle, :year) %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :status, class: 'form-label' %>
+    <%= form.select :status, options_for_select(Vehicle.statuses.keys.map { |s| [s.humanize, s] }, selected: vehicle.status), {}, class: 'form-select' %>
+    <%= form_field_error_class(vehicle, :status) %>
+  </div>
+  <%= form.submit class: 'btn btn-primary' %>
+<% end %>
