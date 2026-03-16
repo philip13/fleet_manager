@@ -13,6 +13,6 @@ Rails.application.routes.draw do
   root "vehicles#index"
   
   resources :vehicles do
-    resources :maintenance_services, only: [:new, :create]
+    resources :maintenance_services, only: [:new, :create, :edit, :update]
   end
 end

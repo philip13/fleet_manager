@@ -1,0 +1,37 @@
+<%= form_with model: [@vehicle, maintenance_service] do |form| %>
+  <div class="mb-3">
+    <%= form.label :description, class: 'form-label' %><br>
+    <%= form.text_field :description, class: 'form-control' %>
+    <%= form_field_error_class(maintenance_service, :description) %>
+  </div>
+  <div class="mb-3">
+    <%= form.label :status, class: 'form-label' %>
+    <%= form.select :status, options_for_select(MaintenanceService.statuses.keys.map { |s| [s.humanize, s] }, selected: maintenance_service.status), {}, class: 'form-select' %>
+    <%= form_field_error_class(maintenance_service, :status) %>
+  </div>
+  <!-- Date -->
+  <div class="mb-3">
+    <%= form.label :date, class: 'form-label' %>
+    <%= form.date_select :date, class: 'form-control' %>
+    <%= form_field_error_class(maintenance_service, :date) %>
+  </div>
+  <!-- Const cents -->
+   <div class="mb-3">
+    <%= form.label :const_cents, class: 'form-label' %>
+    <%= form.number_field :const_cents, class: 'form-control' %>
+    <%= form_field_error_class(maintenance_service, :const_cents) %>
+  </div>
+  <!-- Priority -->
+  <div class="mb-3">
+    <%= form.label :priority, class: 'form-label' %>
+    <%= form.select :priority, options_for_select(MaintenanceService.priorities.keys.map { |s| [s.humanize, s] }, selected: maintenance_service.priority), {}, class: 'form-select' %>
+    <%= form_field_error_class(maintenance_service, :priority) %>
+  </div>
+  <!-- completed_at -->
+  <div class="mb-3">
+    <%= form.label :completed_at, class: 'form-label' %>
+    <%= form.date_select :completed_at, class: 'form-control' %>
+    <%= form_field_error_class(maintenance_service, :completed_at) %>
+  </div>
+  <%= form.submit class: 'btn btn-primary' %>
+<% end %>

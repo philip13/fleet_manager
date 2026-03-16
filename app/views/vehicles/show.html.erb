@@ -1,7 +1,8 @@
 <h1>
   Vehicle Details
 </h1>
-<% @vehicle.inspect %>
+
+<%= link_to 'Edit Vehicle', edit_vehicle_path(@vehicle), class: 'btn btn-secondary mb-3' %>
 
 <div class="card">
   <div class="card-body">
@@ -19,3 +20,40 @@
     <%= link_to 'Back to Vehicles', vehicles_path, class: 'btn btn-primary' %>
   </div>
 </div>
+
+<h3> 
+  Maintenance Services
+</h3>
+<%= link_to 'Add Maintenance Service', new_vehicle_maintenance_service_path(@vehicle), class: 'btn btn-secondary mb-3' %>
+
+<% if  @vehicle.maintenance_services.size > 0 %>
+  <table>
+    <thead>
+      <th>
+        <tr>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Date</th>
+          <th>Cost</th>
+          <th>Completed at</th>
+          <th>Actions</th>
+        </tr>
+      </th>
+    </thead>
+    <tbody>
+      <% @vehicle.maintenance_services.each do |service| %>
+        <tr>
+          <td><%= service.description %></td>
+          <td><%= service.status %></td>
+          <td><%= service.priority %></td>
+          <td><%= service.date %></td>
+          <td><%= service.cost_cents %></td>
+          <td><%= service.completed_at %></td>
+          <td>
+            <%= link_to 'Edit', edit_vehicle_maintenance_service_path(@vehicle, service), class: 'btn btn-secondary' %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<%end %>
