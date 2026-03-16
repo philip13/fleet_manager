@@ -113,6 +113,59 @@ RSpec.describe "Api::V1::Vehicles", type: :request do
     end
   end
 
+  describe "GET /api/v1/vehicles/:id" do
+    let(:vehicle) { create(:vehicle) }
+
+    describe "authorization" do
+      it "returns 401 without token" do
+        get "/api/v1/vehicles/#{vehicle.id}"
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    describe "with valid id" do
+      before { get "/api/v1/vehicles/#{vehicle.id}", headers: headers }
+
+      it "returns 200" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns the vehicle" do
+        expect(json_response[:data][:id]).to eq(vehicle.id)
+      end
+
+      it "returns the expected attributes" do
+        expect(json_response[:data].keys).to include(:id, :vin, :plate, :brand, :model, :year, :status)
+      end
+
+      it "returns the correct vehicle data" do
+        expect(json_response[:data]).to include(
+          vin:   vehicle.vin,
+          plate: vehicle.plate,
+          brand: vehicle.brand,
+          year:  vehicle.year
+        )
+      end
+    end
+
+    describe "with invalid id" do
+      it "returns 404" do
+        get "/api/v1/vehicles/99999", headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns error structure" do
+        get "/api/v1/vehicles/99999", headers: headers
+        expect(json_response[:error]).to include(:code, :message)
+      end
+
+      it "returns not_found code" do
+        get "/api/v1/vehicles/99999", headers: headers
+        expect(json_response[:error][:code]).to eq("not_found")
+      end
+    end
+  end
+
   describe "POST /api/v1/vehicles" do
     let(:valid_params) do
       {
@@ -130,7 +183,6 @@ RSpec.describe "Api::V1::Vehicles", type: :request do
     describe "authorization" do
       it "returns 401 without token" do
         post "/api/v1/vehicles", params: valid_params, as: :json
-        binding.irb
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -163,7 +215,7 @@ RSpec.describe "Api::V1::Vehicles", type: :request do
       it "returns 422 when vin is missing" do
         post "/api/v1/vehicles", params: { vehicle: valid_params[:vehicle].except(:vin) },
              headers: headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "returns error structure" do
@@ -176,19 +228,19 @@ RSpec.describe "Api::V1::Vehicles", type: :request do
         post "/api/v1/vehicles",
              params: { vehicle: valid_params[:vehicle].merge(year: 1980) },
              headers: headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "returns 422 when vin is duplicated" do
         create(:vehicle, vin: "1HGCM82633A004352")
         post "/api/v1/vehicles", params: valid_params, headers: headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "returns 422 when plate is duplicated case-insensitive" do
         create(:vehicle, plate: "abc123")
         post "/api/v1/vehicles", params: valid_params, headers: headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "does not create a vehicle with invalid data" do

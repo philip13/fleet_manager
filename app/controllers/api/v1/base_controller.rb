@@ -4,6 +4,10 @@ module Api
       protect_from_forgery with: :null_session
       before_action :authenticate_request!
 
+      rescue_from ActiveRecord::RecordNotFound do
+        render_error(code: "not_found", message: "Record not found", status: :not_found)
+      end
+
       private
 
       def authenticate_request!

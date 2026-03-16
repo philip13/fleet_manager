@@ -23,10 +23,15 @@ module Api
           render_error(
             code:    "validation_error",
             message: "Vehicle could not be created",
-            status:  :unprocessable_entity,
+            status:  :unprocessable_content,
             details: vehicle.errors.as_json
           )
         end
+      end
+
+      def show
+        vehicle = Vehicle.find(params[:id])
+        render json: { data: VehicleSerializer.new(vehicle) }
       end
 
       private
