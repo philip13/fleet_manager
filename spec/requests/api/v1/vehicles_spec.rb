@@ -251,4 +251,78 @@ RSpec.describe "Api::V1::Vehicles", type: :request do
       end
     end
   end
+
+  describe "PUT /api/v1/vehicles/:id" do
+    let(:vehicle) { create(:vehicle, brand: "Honda", year: 2020) }
+
+    describe "authorization" do
+      it "returns 401 without token" do
+        put "/api/v1/vehicles/#{vehicle.id}", params: { vehicle: { brand: "Toyota" } }, as: :json
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    describe "with valid params" do
+      it "returns 200" do
+        put "/api/v1/vehicles/#{vehicle.id}",
+            params: { vehicle: { brand: "Toyota" } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "updates the vehicle" do
+        put "/api/v1/vehicles/#{vehicle.id}",
+            params: { vehicle: { brand: "Toyota", year: 2022 } },
+            headers: headers, as: :json
+        expect(json_response[:data]).to include(brand: "Toyota", year: 2022)
+      end
+
+      it "persists the changes in the database" do
+        put "/api/v1/vehicles/#{vehicle.id}",
+            params: { vehicle: { brand: "Toyota" } },
+            headers: headers, as: :json
+        expect(vehicle.reload.brand).to eq("Toyota")
+      end
+    end
+
+    describe "with invalid params" do
+      it "returns 422 when year is out of range" do
+        put "/api/v1/vehicles/#{vehicle.id}",
+            params: { vehicle: { year: 1800 } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns error structure" do
+        put "/api/v1/vehicles/#{vehicle.id}",
+            params: { vehicle: { vin: "" } },
+            headers: headers, as: :json
+        expect(json_response[:error]).to include(:code, :message, :details)
+      end
+
+      it "returns 422 when vin is duplicated" do
+        other = create(:vehicle)
+        put "/api/v1/vehicles/#{vehicle.id}",
+            params: { vehicle: { vin: other.vin } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "does not persist invalid changes" do
+        put "/api/v1/vehicles/#{vehicle.id}",
+            params: { vehicle: { year: 1800 } },
+            headers: headers, as: :json
+        expect(vehicle.reload.year).to eq(2020)
+      end
+    end
+
+    describe "with invalid id" do
+      it "returns 404" do
+        put "/api/v1/vehicles/99999",
+            params: { vehicle: { brand: "Toyota" } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end

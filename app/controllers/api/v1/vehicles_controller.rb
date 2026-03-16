@@ -34,6 +34,21 @@ module Api
         render json: { data: VehicleSerializer.new(vehicle) }
       end
 
+      def update
+        vehicle = Vehicle.find(params[:id])
+
+        if vehicle.update(vehicle_params)
+          render json: { data: VehicleSerializer.new(vehicle) }
+        else
+          render_error(
+            code:    "validation_error",
+            message: "Vehicle could not be updated",
+            status:  :unprocessable_entity,
+            details: vehicle.errors.as_json
+          )
+        end
+      end
+
       private
 
       def vehicle_params
