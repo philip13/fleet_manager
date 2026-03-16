@@ -49,6 +49,12 @@ module Api
         end
       end
 
+      def destroy
+        vehicle = Vehicle.find(params[:id])
+        vehicle.destroy
+        render json: { message: "Vehicle deleted successfully" }, status: :ok
+      end
+
       private
 
       def vehicle_params

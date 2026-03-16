@@ -325,4 +325,40 @@ RSpec.describe "Api::V1::Vehicles", type: :request do
       end
     end
   end
+
+  describe "DELETE /api/v1/vehicles/:id" do
+    let!(:vehicle) { create(:vehicle) }
+
+    describe "authorization" do
+      it "returns 401 without token" do
+        delete "/api/v1/vehicles/#{vehicle.id}"
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    describe "with valid id" do
+      it "returns 200" do
+        delete "/api/v1/vehicles/#{vehicle.id}", headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "deletes the vehicle" do
+        expect {
+          delete "/api/v1/vehicles/#{vehicle.id}", headers: headers
+        }.to change(Vehicle, :count).by(-1)
+      end
+
+      it "returns success message" do
+        delete "/api/v1/vehicles/#{vehicle.id}", headers: headers
+        expect(json_response[:message]).to eq("Vehicle deleted successfully")
+      end
+    end
+
+    describe "with invalid id" do
+      it "returns 404" do
+        delete "/api/v1/vehicles/99999", headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end
