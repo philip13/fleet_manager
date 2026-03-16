@@ -24,7 +24,7 @@ class MaintenanceService < ApplicationRecord
   end
 
   def complete_date_must_be_present
-    if status == 'completed' && completed_at.nil?
+    if status == "completed" && completed_at.nil?
       errors.add(:completed_at, "can't be blank when service is completed")
     end
   end

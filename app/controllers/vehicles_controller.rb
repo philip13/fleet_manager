@@ -14,7 +14,7 @@ class VehiclesController < ApplicationController
   def create
     @vehicle = Vehicle.new(vehicle_params)
     if @vehicle.save
-      redirect_to @vehicle, notice: 'Vehicle was successfully created.'
+      redirect_to @vehicle, notice: "Vehicle was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class VehiclesController < ApplicationController
   def update
     @vehicle = Vehicle.find(params[:id])
     if @vehicle.update(vehicle_params)
-      redirect_to @vehicle, notice: 'Vehicle was successfully updated.'
+      redirect_to @vehicle, notice: "Vehicle was successfully updated."
     else
        render :edit, status: :unprocessable_entity
     end
@@ -36,7 +36,7 @@ class VehiclesController < ApplicationController
   def destroy
     @vehicle = Vehicle.find(params[:id])
     @vehicle.destroy
-    redirect_to vehicles_url, notice: 'Vehicle was successfully destroyed.'
+    redirect_to vehicles_url, notice: "Vehicle was successfully destroyed."
   end
 
   private

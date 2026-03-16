@@ -10,7 +10,7 @@ RSpec.describe Vehicle, type: :model do
     it { should validate_numericality_of(:year).only_integer }
     it { should validate_presence_of(:status) }
     it { should have_many(:maintenance_services) }
-    
+
     describe '#year' do
       context 'with valid year' do
         it 'accepts valid years' do
@@ -29,9 +29,9 @@ RSpec.describe Vehicle, type: :model do
         end
       end
     end
-    
+
     describe '#status' do
-      it { should define_enum_for(:status).with_values([:active, :inactive, :in_maintenance])}
+      it { should define_enum_for(:status).with_values([ :active, :inactive, :in_maintenance ]) }
     end
 
     describe '#vin' do

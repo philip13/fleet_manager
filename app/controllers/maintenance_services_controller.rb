@@ -10,7 +10,7 @@ class MaintenanceServicesController < ApplicationController
     binding.irb
     if @maintenance_service.save
       @vehicle.sync_status!
-      redirect_to @vehicle, notice: 'Maintenance service was successfully created.'
+      redirect_to @vehicle, notice: "Maintenance service was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class MaintenanceServicesController < ApplicationController
 
     if @maintenance_service.update(maintenance_service_params)
       @vehicle.sync_status!
-      redirect_to @vehicle, notice: 'Maintenance service was successfully updated.'
+      redirect_to @vehicle, notice: "Maintenance service was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end

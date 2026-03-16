@@ -16,7 +16,7 @@ RSpec.describe MaintenanceService, type: :model do
 
     describe '#status' do
       it 'accepts valid statuses' do
-        should define_enum_for(:status).with_values([:pending, :in_progress, :completed])
+        should define_enum_for(:status).with_values([ :pending, :in_progress, :completed ])
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe MaintenanceService, type: :model do
 
     describe '#priority' do
       it 'accepts valid priority values' do
-        should define_enum_for(:priority).with_values([:low, :medium, :high])
+        should define_enum_for(:priority).with_values([ :low, :medium, :high ])
       end
     end
 
