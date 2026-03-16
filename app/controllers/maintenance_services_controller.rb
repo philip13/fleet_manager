@@ -7,7 +7,6 @@ class MaintenanceServicesController < ApplicationController
   def create
     @vehicle = Vehicle.find(params[:vehicle_id])
     @maintenance_service = @vehicle.maintenance_services.new(maintenance_service_params)
-    binding.irb
     if @maintenance_service.save
       @vehicle.sync_status!
       redirect_to @vehicle, notice: "Maintenance service was successfully created."

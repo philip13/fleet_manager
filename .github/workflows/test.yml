@@ -34,7 +34,7 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_DB: agro_reports_test
+          POSTGRES_DB: fleet_manager_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
         ports: ["5432:5432"]
@@ -46,7 +46,7 @@ jobs:
           --health-retries 5
     env:
       RAILS_ENV: test
-      DATABASE_URL: "postgres://postgres:password@localhost:5432/agro_reports_test"
+      DATABASE_URL: "postgres://postgres:password@localhost:5432/fleet_manager_test"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Ruby
@@ -57,4 +57,4 @@ jobs:
         run: |
           bundle exec rails db:schema:load
           bundle exec rake assets:precompile
-          bundle exec rake test:all
+          bundle exec rspec spec/

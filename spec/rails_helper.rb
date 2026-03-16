@@ -76,4 +76,11 @@ RSpec.configure do |config|
       with.library :rails
     end
   end
+
+  # Helper for parsing JSON responses in request specs
+  config.include Module.new {
+    def json_response
+      JSON.parse(response.body, symbolize_names: true)
+    end
+  }, type: :request
 end
