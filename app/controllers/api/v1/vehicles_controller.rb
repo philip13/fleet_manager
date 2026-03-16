@@ -14,7 +14,26 @@ module Api
         }
       end
 
+      def create
+        vehicle = Vehicle.new(vehicle_params)
+
+        if vehicle.save
+          render json: { data: VehicleSerializer.new(vehicle) }, status: :created
+        else
+          render_error(
+            code:    "validation_error",
+            message: "Vehicle could not be created",
+            status:  :unprocessable_entity,
+            details: vehicle.errors.as_json
+          )
+        end
+      end
+
       private
+
+      def vehicle_params
+        params.require(:vehicle).permit(:vin, :plate, :brand, :model, :year, :status)
+      end
 
       def apply_filters(scope)
         scope = scope.where(status: params[:status]) if params[:status].present?
