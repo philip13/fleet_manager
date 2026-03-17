@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
       - name: Install dependencies
@@ -48,7 +48,7 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: "postgres://postgres:password@localhost:5432/fleet_manager_test"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
       - name: Install dependencies
