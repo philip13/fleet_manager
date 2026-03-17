@@ -174,4 +174,92 @@ RSpec.describe "Api::V1::MaintenanceServices", type: :request do
       end
     end
   end
+
+  describe "PUT /api/v1/maintenance_services/:id" do
+    let!(:service) { create(:maintenance_service, vehicle: vehicle, status: :pending) }
+
+    describe "authorization" do
+      it "returns 401 without token" do
+        put "/api/v1/maintenance_services/#{service.id}", as: :json
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    describe "with valid params" do
+      it "returns 200" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { description: "Brake inspection" } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "updates the service" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { description: "Brake inspection" } },
+            headers: headers, as: :json
+        expect(service.reload.description).to eq("Brake inspection")
+      end
+
+      it "updates status to in_progress" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { status: "in_progress" } },
+            headers: headers, as: :json
+        expect(service.reload.status).to eq("in_progress")
+      end
+
+      it "updates status to completed with completed_at" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { status: "completed", completed_at: Time.current } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(service.reload.status).to eq("completed")
+      end
+
+      it "syncs vehicle status to in_maintenance when pending" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { status: "pending" } },
+            headers: headers, as: :json
+        expect(vehicle.reload.status).to eq("in_maintenance")
+      end
+    end
+
+    describe "with invalid params" do
+      it "returns 422 when completed_at is missing on completed status" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { status: "completed", completed_at: nil } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns 422 when cost_cents is negative" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { cost_cents: -100 } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns error structure" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { cost_cents: -100 } },
+            headers: headers, as: :json
+        expect(json_response[:error]).to include(:code, :message, :details)
+      end
+
+      it "does not persist invalid changes" do
+        put "/api/v1/maintenance_services/#{service.id}",
+            params: { maintenance_service: { cost_cents: -100 } },
+            headers: headers, as: :json
+        expect(service.reload.cost_cents).not_to eq(-100)
+      end
+    end
+
+    describe "with invalid id" do
+      it "returns 404" do
+        put "/api/v1/maintenance_services/99999",
+            params: { maintenance_service: { description: "Test" } },
+            headers: headers, as: :json
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end

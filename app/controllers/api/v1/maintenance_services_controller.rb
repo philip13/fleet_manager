@@ -2,6 +2,7 @@ module Api
   module V1
     class MaintenanceServicesController < BaseController
       before_action :set_vehicle, only: [ :index, :create ]
+      before_action :set_service, only: [ :update ]
 
       def index
         services = @vehicle.maintenance_services
@@ -31,6 +32,19 @@ module Api
       end
     end
 
+    def update
+      if @service.update(maintenance_service_params)
+        render json: { data: MaintenanceServiceSerializer.new(@service) }
+      else
+        render_error(
+          code:    "validation_error",
+          message: "Maintenance service could not be updated",
+          status:  :unprocessable_entity,
+          details: @service.errors.as_json
+        )
+      end
+    end
+
       private
 
       def maintenance_service_params
@@ -39,6 +53,10 @@ module Api
 
       def set_vehicle
         @vehicle = Vehicle.find(params[:vehicle_id])
+      end
+
+      def set_service
+        @service = MaintenanceService.find(params[:id])
       end
 
       def pagination_meta(collection)

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :vehicles, only: [ :index, :create, :show, :update, :destroy ] do
         resources :maintenance_services, only: [ :index, :create ]
       end
+      resources :maintenance_services, only: [ :update ]
     end
   end
 end
