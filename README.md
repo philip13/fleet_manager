@@ -54,9 +54,40 @@ Fleet Manager es una aplicación web construida con Ruby on Rails que permite ge
    ```
    La aplicación estará disponible en `http://localhost:3000`.
 
-### Opción 2: Usando Docker
+### Opción 2: Desarrollo con Docker Compose
 
-El proyecto incluye un Dockerfile para despliegue en producción. Para desarrollo local con Docker:
+Esta opción es recomendada para desarrollo local, ya que incluye la base de datos PostgreSQL en un contenedor.
+
+1. **Clona el repositorio**:
+   ```bash
+   git clone git@github.com:philip13/fleet_manager.git
+   cd fleet_manager
+   ```
+
+2. **Ejecuta con Docker Compose**:
+   ```bash
+   docker-compose up --build
+   ```
+   Esto construirá la imagen de la aplicación e iniciará PostgreSQL.
+
+3. **Ejecuta las migraciones** (primera vez):
+   ```bash
+   docker-compose exec app bundle exec rails db:migrate
+   ```
+
+4. **(Opcional) Carga datos de prueba**:
+   ```bash
+   docker-compose exec app bundle exec rails db:seed
+   ```
+
+5. **Accede a la aplicación**:
+   La aplicación estará disponible en `http://localhost:3000`.
+
+Nota: Los cambios en el código se reflejarán automáticamente gracias a los volúmenes montados.
+
+### Opción 3: Producción con Docker
+
+El proyecto incluye un Dockerfile optimizado para producción.
 
 1. Construye la imagen:
    ```bash
@@ -65,10 +96,10 @@ El proyecto incluye un Dockerfile para despliegue en producción. Para desarroll
 
 2. Ejecuta el contenedor:
    ```bash
-   docker run -p 3000:3000 fleet-manager
+   docker run -p 3000:3000 -e RAILS_MASTER_KEY=<tu-clave-maestra> fleet-manager
    ```
 
-Nota: El Dockerfile está optimizado para producción. Para desarrollo, considera usar docker-compose si está disponible.
+Asegúrate de configurar las variables de entorno necesarias para producción.
 
 ## Uso
 
