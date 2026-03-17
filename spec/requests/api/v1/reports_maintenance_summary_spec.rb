@@ -120,4 +120,39 @@ RSpec.describe "GET /api/v1/reports/maintenance_summary", type: :request do
       expect(json_response[:data][:total_orders]).to eq(6)
     end
   end
+
+  describe "CSV export" do
+    it "returns csv content type" do
+      get "/api/v1/reports/maintenance_summary.csv", headers: headers
+      expect(response.content_type).to include("text/csv")
+    end
+
+    it "returns 200" do
+      get "/api/v1/reports/maintenance_summary.csv", headers: headers
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "includes headers row" do
+      get "/api/v1/reports/maintenance_summary.csv", headers: headers
+      expect(response.body).to include("Section,Field,Value")
+    end
+
+    it "includes totals in csv" do
+      get "/api/v1/reports/maintenance_summary.csv", headers: headers
+      expect(response.body).to include("Totals")
+      expect(response.body).to include("Total Orders")
+    end
+
+    it "includes vehicle data in csv" do
+      get "/api/v1/reports/maintenance_summary.csv", headers: headers
+      expect(response.body).to include(vehicle_a.vin)
+    end
+
+    it "csv respects date filters" do
+      get "/api/v1/reports/maintenance_summary.csv",
+          params: { from: 4.days.ago.to_date, to: 2.days.ago.to_date },
+          headers: headers
+      expect(response.body).to include("3")
+    end
+  end
 end
