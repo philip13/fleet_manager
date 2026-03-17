@@ -1,0 +1,41 @@
+<h1>Vehicles#index</h1>
+
+<div class="mb-3">
+  <%= link_to 'New Vehicle', new_vehicle_path, class: 'btn btn-primary' %>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Brand</th>
+      <th>Model</th>
+      <th>Year</th>
+      <th>Plate</th>
+      <th>VIN</th>
+      <th>Status</th>
+      <th> Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @vehicles.each do |vehicle| %>
+      <tr>
+        <td><%= vehicle.id %></td>
+        <td><%= vehicle.brand %></td>
+        <td><%= vehicle.model %></td>
+        <td><%= vehicle.year %></td>
+        <td><%= vehicle.plate %></td>
+        <td><%= vehicle.vin %></td>
+        <td><%= vehicle.status %></td>
+        <td>
+          <%= link_to 'Show', vehicle %>
+          <%= link_to 'Edit', edit_vehicle_path(vehicle) %>
+          <%= link_to 'Destroy', vehicle, method: :delete, data: {
+            turbo_method: :delete,
+            turbo_confirm: 'Are you sure?'
+          } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
