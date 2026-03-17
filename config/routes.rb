@@ -14,6 +14,9 @@ Rails.application.routes.draw do
         resources :maintenance_services, only: [ :index, :create ]
       end
       resources :maintenance_services, only: [ :update ]
+      namespace :reports do
+        get :maintenance_summary, defaults: { format: :json }
+      end
     end
   end
 end
