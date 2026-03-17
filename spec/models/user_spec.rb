@@ -9,6 +9,6 @@ RSpec.describe User, type: :model do
     it { should allow_value('test@example.com').for(:email) }
     it { should_not allow_value('invalid_email').for(:email) }
     it { should have_secure_password }
-    it { should define_enum_for(:role).with_values([ :addmin, :user ]) }
+    it { should define_enum_for(:role).with_values([ :admin, :user ]) }
   end
 end
